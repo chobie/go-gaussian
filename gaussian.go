@@ -40,7 +40,7 @@ func NewGaussian(mean, variance float64) *Gaussian {
 
 // Complementary error function
 // From Numerical Recipes in C 2e p221
-func erfc(x float64) float64 {
+func Erfc(x float64) float64 {
 	z := math.Abs(x)
 	t := 1 / (1 + z/2)
 	r := t * math.Exp(-z*z-1.26551223+t*(1.00002368+
@@ -56,7 +56,7 @@ func erfc(x float64) float64 {
 
 // Inverse complementary error function
 // From Numerical Recipes 3e p265
-func ierfc(x float64) float64 {
+func Ierfc(x float64) float64 {
 	if x >= 2 {
 		return -100
 	}
@@ -74,7 +74,7 @@ func ierfc(x float64) float64 {
 		(1+t*(0.99229+t*0.04481)) - t)
 
 	for j := 0; j < 2; j++ {
-		e := erfc(r) - xx
+		e := Erfc(r) - xx
 		r += e / (1.12837916709551257*math.Exp(-(r*r)) - r*e)
 	}
 
@@ -105,12 +105,12 @@ func (self *Gaussian) Pdf(x float64) float64 {
 // which describes the probability of a random
 // variable falling in the interval (−∞, x]
 func (self *Gaussian) Cdf(x float64) float64 {
-	return 0.5 * erfc(-(x-self.mean)/(self.standardDeviation*math.Sqrt(2)))
+	return 0.5 * Erfc(-(x-self.mean)/(self.standardDeviation*math.Sqrt(2)))
 }
 
 //ppf(x): the percent point function, the inverse of cdf
 func (self *Gaussian) Ppf(x float64) float64 {
-	return self.mean - self.standardDeviation*math.Sqrt(2)*ierfc(2*x)
+	return self.mean - self.standardDeviation*math.Sqrt(2)*Ierfc(2*x)
 }
 
 func (self *Gaussian) Add(d *Gaussian) *Gaussian {
